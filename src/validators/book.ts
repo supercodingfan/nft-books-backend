@@ -7,7 +7,6 @@ const BookCreateValidator = [
   check("owner").not().isEmpty().withMessage("Owner is required."),
   check("image")
     .not()
-    .isEmpty()
     .custom((value, { req }) => {
       if (!req.file) throw new Error("Book image is required");
       return true;
@@ -23,14 +22,10 @@ const BookEditValidator = [
     .withMessage("Owner is required.")
     .custom(async (value, { req }) => {
       const book = await Book.findOne({ id: req.params?.id });
-      if (book.owner === value) return true;
-      return false;
+      if (book.owner !== value) return Promise.reject();
+      return true;
     })
     .withMessage("Only owner can edit a book."),
-  check("image").custom((value, { req }) => {
-    if (!req.file) throw new Error("Book image is required");
-    return true;
-  }),
 ];
 
 const BookDeleteValidator = [
@@ -40,8 +35,8 @@ const BookDeleteValidator = [
     .withMessage("Owner is required.")
     .custom(async (value, { req }) => {
       const book = await Book.findOne({ id: req.params?.id });
-      if (book.owner === value) return true;
-      return false;
+      if (book.owner !== value) return Promise.reject();
+      return true;
     })
     .withMessage("Only owner can delete a book."),
 ];

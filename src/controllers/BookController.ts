@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { UploadedFile } from "express-fileupload";
+import { validationResult } from "express-validator";
 import _ from "lodash";
 import { Book } from "../models/Book";
 import { getRandomFileName } from "../utils";
@@ -12,6 +13,13 @@ const BookController = {
     });
   },
   create: async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({
+        status: "failed",
+        errors: errors.array(),
+      });
+    }
     if (!req.files) {
       res.status(422).send({
         status: "failed",
@@ -40,6 +48,13 @@ const BookController = {
     }
   },
   edit: async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({
+        status: "failed",
+        errors: errors.array(),
+      });
+    }
     let book;
     if (req.files) {
       let image: UploadedFile | UploadedFile[] = req.files.image;
@@ -70,6 +85,13 @@ const BookController = {
     });
   },
   remove: async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({
+        status: "failed",
+        errors: errors.array(),
+      });
+    }
     await Book.findByIdAndDelete(req.params?.id);
 
     return res.status(204).send({});
