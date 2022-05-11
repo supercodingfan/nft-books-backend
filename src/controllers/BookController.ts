@@ -33,11 +33,12 @@ const BookController = {
           message: "You can only upload a single file.",
         });
       } else {
-        let path = "./uploads/" + getRandomFileName() + image.name;
+        let filename = getRandomFileName() + image.name;
+        let path = "./uploads/" + filename;
         image.mv(path);
         const book = new Book({
           ..._.pick(req.body, ["title", "description", "owner"]),
-          image_path: path,
+          image_path: filename,
         });
         await book.save();
         res.status(201).send({
@@ -64,11 +65,12 @@ const BookController = {
           message: "You can only upload a single file.",
         });
       } else {
-        let path = "./uploads/" + getRandomFileName() + image.name;
+        let filename = getRandomFileName() + image.name;
+        let path = "./uploads/" + filename;
         image.mv(path);
         book = {
           ..._.pick(req.body, ["title", "description", "owner"]),
-          image_path: path,
+          image_path: filename,
         };
       }
     } else {
