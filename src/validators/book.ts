@@ -21,9 +21,8 @@ const BookEditValidator = [
     .isEmpty()
     .withMessage("Owner is required.")
     .custom(async (value, { req }) => {
-      const book = await Book.findOne({ id: req.params?.id });
-      if (book.owner !== value) return Promise.reject();
-      return true;
+      const book = await Book.findOne({ id: req.params?.id, owner: value });
+      if (!book) return Promise.reject();
     })
     .withMessage("Only owner can edit a book."),
 ];
@@ -34,9 +33,8 @@ const BookDeleteValidator = [
     .isEmpty()
     .withMessage("Owner is required.")
     .custom(async (value, { req }) => {
-      const book = await Book.findOne({ id: req.params?.id });
-      if (book.owner !== value) return Promise.reject();
-      return true;
+      const book = await Book.findOne({ id: req.params?.id, owner: value });
+      if (!book) return Promise.reject();
     })
     .withMessage("Only owner can delete a book."),
 ];
